@@ -1,0 +1,92 @@
+<div class="container my-5">
+  <div class="row justify-content-center">
+
+    <div class="col-10 col-sm-10 col-md-4 col-lg-4 my-3">
+
+      <mdb-card class="rounded z-depth-3">
+        <mdb-card-body class="text-center">
+          <h2 class="h2 h2-responsive">Total Cases </h2>
+          <h4 class="h4 h4-responsive text-muted">{{totalCases | number}} </h4>
+
+        </mdb-card-body>
+      </mdb-card>
+
+    </div>
+
+    <div class="col-10 col-sm-10 col-md-4 col-lg-4 my-3">
+
+      <mdb-card class="rounded z-depth-3">
+        <mdb-card-body class="text-center">
+          <h2 class="h2 h2-responsive">Total Tests </h2>
+          <h4 class="h4 h4-responsive text-muted">{{totalTests | number}} </h4>
+
+        </mdb-card-body>
+      </mdb-card>
+
+    </div>
+
+    <div class="col-10 col-sm-10 col-md-4 col-lg-4 my-3">
+
+      <mdb-card class="rounded z-depth-3">
+        <mdb-card-body class="text-center">
+          <h2 class="h2 h2-responsive">Total Deaths </h2>
+          <h4 class="h4 h4-responsive text-muted">{{totalDeaths | number}} </h4>
+
+        </mdb-card-body>
+      </mdb-card>
+
+    </div>
+
+    <div class="col-12 my-5">
+      <mdb-card class="rounded z-depth-3">
+        <mdb-card-body class="text-center">
+
+          <h1 class="h1 h1-responsive mb-3">{{countryName }} </h1>
+
+          <img src="{{flagUrl}}" height="100" width="auto" alt="Country">
+
+          <div class="row justify-content-center mt-5">
+
+            <div class="col-10 col-sm-10 col-md-10 col-lg-6 text-center text-lg-left mt-5">
+
+              <div class="col-12">
+                <h2 class="h2 h2-responsive">Population: <span class="text-muted">{{localStatistic?.population | number}}</span> </h2>
+              </div>
+
+              <div class="col-12">
+                <h2 class="h2 h2-responsive">Total Cases: <span class="text-muted">{{localStatistic?.cases.total | number}}</span> </h2>
+              </div>
+
+              <div class="col-12">
+                <h2 class="h2 h2-responsive">Total Tests: <span class="text-muted">{{localStatistic?.tests.total | number}}</span> </h2>
+              </div>
+
+              <div class="col-12">
+                <h2 class="h2 h2-responsive">Total Deaths: <span class="text-muted">{{localStatistic?.deaths.total | number}}</span> </h2>
+              </div>
+
+            </div>
+
+            <div class="col-10 col-sm-10 col-md-10 col-lg-6 mt-5 mt-sm-5 mt-md-5 mt-lg-0 mt-xl-0">
+
+              <div style="display: block" *ngIf="localStatistic">
+                <canvas mdbChart [chartType]="chartType" [datasets]="chartDatasets" [labels]="chartLabels"
+                        [colors]="chartColors" [options]="chartOptions" [legend]="true">
+                </canvas>
+              </div>
+            </div>
+
+            <div class="col-8 col-sm-8 col-md-6 col-lg-4 mt-4 mb-2">
+              <button type="button" mdbBtn class="bg-primary-color white-text" block="true" mdbWavesEffect (click)="syncData()">Sync data</button>
+            </div>
+
+          </div>
+
+
+
+        </mdb-card-body>
+      </mdb-card>
+    </div>
+
+  </div>
+</div>
