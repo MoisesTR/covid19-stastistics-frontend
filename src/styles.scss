@@ -16,6 +16,10 @@ body {
   background-color: $primary-color;
 }
 
+.text-primary-color {
+  color: $primary-color;
+}
+
 .form-wrap,
 .img-wrap-login {
   height: 100vh;

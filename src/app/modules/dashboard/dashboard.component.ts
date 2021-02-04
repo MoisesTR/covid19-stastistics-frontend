@@ -1,11 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { findFlagUrlByCountryName } from 'country-flags-svg';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { StatisticService } from '../../core/services/statistic.service';
 import { Statistic } from '../../core/domain/interfaces/statistic';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { ToastService } from 'ng-uikit-pro-standard';
+import { ModalDirective, ToastService } from 'ng-uikit-pro-standard';
+import { groupBy } from '@app/utils/utils';
+import { Continent } from '../../core/domain/dtos/continent';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,10 +18,25 @@ import { ToastService } from 'ng-uikit-pro-standard';
 export class DashboardComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   private $findStatisticByCountryName = new Subject();
+
+  formCases: FormGroup;
+  formDeaths: FormGroup;
+  formTests: FormGroup;
+
+  @ViewChild('modalDetailStatistic', { static: true })
+  modalDetailStatistic: ModalDirective;
+
+  @ViewChild('modalUpdateStatistic', { static: true })
+  modalUpdateStatistic: ModalDirective;
+
   flagUrl: string;
   countryName: string;
   localStatistic: Statistic;
   statistics: Statistic[];
+  continents: Continent[] = [];
+  selectedCountry: Statistic;
+  countryToUpdate: Statistic;
+  flagUrlSelected: string;
   totalDeaths: number;
   totalTests: number;
   totalCases: number;
@@ -39,6 +57,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
   ];
 
+  headElements = ['#', 'Country', 'Population', 'Action'];
+
   public chartOptions: any = {
     responsive: true,
   };
@@ -46,7 +66,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private statisticService: StatisticService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +75,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.flagUrl = findFlagUrlByCountryName(this.countryName);
     this.getStatisticByCountryName();
     this.getStatistics();
+
+    this.initForms();
   }
 
   getStatisticByCountryName(): void {
@@ -81,11 +104,75 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((statistics) => {
         this.statistics = statistics;
+        this.createArrayContinents(groupBy<Statistic>(statistics, 'continent'));
         this.calculateTotals();
       });
   }
 
+  createArrayContinents(groupContinents: any): void {
+    groupContinents.forEach((statisticsContinent, continent) => {
+      if (continent && continent !== 'All') {
+        this.continents.push({
+          name: continent,
+          statistics: statisticsContinent,
+        });
+      }
+    });
+  }
+
+  initForms(): void {
+    this.formCases = this.formBuilder.group({
+      active: new FormControl(0),
+      critical: new FormControl(0),
+      newCases: new FormControl(0),
+      recovered: new FormControl(0),
+    });
+    this.formTests = this.formBuilder.group({
+      newTests: new FormControl(0),
+    });
+    this.formDeaths = this.formBuilder.group({
+      newCases: new FormControl(0),
+    });
+  }
+
+  updateCases(): void {
+    this.statisticService
+      .addNewCases({
+        statisticId: this.countryToUpdate.statisticId,
+        ...this.formCases.value,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp) => {
+        this.toastService.success(resp.message);
+      });
+  }
+
+  updateTests(): void {
+    this.statisticService
+      .addNewTests({
+        statisticId: this.countryToUpdate.statisticId,
+        ...this.formTests.value,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp) => {
+        this.toastService.success(resp.message);
+      });
+  }
+
+  updateDeaths(): void {
+    this.statisticService
+      .addNewDeaths({
+        statisticId: this.countryToUpdate.statisticId,
+        ...this.formDeaths.value,
+      })
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((resp) => {
+        this.toastService.success(resp.message);
+      });
+  }
+
   syncData(): void {
+    this.toastService.info('Synchronizing statistics...');
     this.statisticService
       .syncData()
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -102,6 +189,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.totalTests = this.statisticService.countTotalTests(this.statistics);
     this.totalDeaths = this.statisticService.countTotalDeaths(this.statistics);
   }
+
+  showDetailCountry(statistic: Statistic): void {
+    this.selectedCountry = statistic;
+    this.flagUrlSelected = findFlagUrlByCountryName(this.selectedCountry.country);
+    this.modalDetailStatistic.show();
+  }
+
+  showModalUpdate(statistic: Statistic): void {
+    this.countryToUpdate = statistic;
+    this.modalUpdateStatistic.show();
+  }
+
   ngOnDestroy(): void {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

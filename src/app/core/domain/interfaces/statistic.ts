@@ -3,6 +3,7 @@ import { Death } from './death';
 import { TestCovid } from '@core/domain/interfaces/test-covid';
 
 export interface Statistic {
+  statisticId: string;
   continent: string;
   country: string;
   population: number;
