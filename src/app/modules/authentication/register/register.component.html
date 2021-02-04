@@ -1,0 +1,61 @@
+<div class="d-flex">
+  <div class="img-wrap-register">
+  </div>
+  <div class="form-wrap d-flex">
+    <div class="align-self-center">
+      <div class="form-wrap-inner align-self-center h-100">
+        <a href="index.html" class="logo">
+          <img src="../../../../assets/img/logo.svg" alt="Logo">
+        </a>
+
+
+        <form [formGroup]="formRegister" (ngSubmit)="register()" class="form mb-5">
+
+          <!-- Username -->
+          <div class="form-group">
+            <input id="usernameRegister" type="text" class="form-control" formControlName="userName" placeholder="Username/Email">
+          </div>
+          <!-- /.Username -->
+
+          <!-- Country -->
+          <div class="form-group">
+            <select class="form-control" id="countryRegister" formControlName="country">
+              <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+            </select>
+          </div>
+          <!-- /.Country -->
+
+          <!-- Password -->
+          <div class="form-group">
+            <input id="passwordRegister" type="password" class="form-control" formControlName="password" placeholder="Password">
+            <app-show-errors [control]="formRegister.controls['password']">
+            </app-show-errors>
+          </div>
+          <!-- /.Password -->
+
+          <!-- Confirm password -->
+          <div class="form-group">
+            <input id="confimPassword" type="password" class="form-control" formControlName="passwordConfirm" placeholder="Confirm password">
+          </div>
+
+          <div class="form-group"
+            *ngIf="formRegister.hasError('noPasswordMatch')">
+            <span class="error-message" style="left: 2.5rem;">Contraseñas no coinciden!</span>
+          </div>
+          <!-- /.Confirm password -->
+
+          <div class="form-group mb-4">
+                        <span class="small" [routerLink]="'login'">
+                            Have an account? <a>Login</a>
+                        </span>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

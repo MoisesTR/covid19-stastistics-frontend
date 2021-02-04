@@ -1,0 +1,6 @@
+build
+coverage
+package.json
+
+# Ignore all HTML files:
+*.html

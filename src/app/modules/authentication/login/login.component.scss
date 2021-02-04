@@ -1,0 +1,67 @@
+.img-wrap-login {
+  z-index: 1;
+  position: relative;
+  width: calc(100% - 500px);
+  background-image: url('../../../../assets/img/login.jpg');
+  background-size: cover;
+  background-position: 80%;
+  background-repeat: no-repeat;
+}
+@media screen and (max-width: 576px) {
+  .img-wrap-login {
+    display: none;
+  }
+}
+
+.form a {
+  color: #6275a8;
+}
+.form a:hover {
+  color: #283148;
+  text-decoration: underline;
+}
+
+.form .form-control {
+  border: 1px solid #eee;
+}
+.form .form-control:hover,
+.form .form-control:active,
+.form .form-control:focus {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  outline: none;
+}
+.form .form-control:active,
+.form .form-control:focus {
+  border: 1px solid #d5d5d5;
+}
+
+.form .btn,
+.form .form-control {
+  height: 55px;
+}
+.form .btn:hover,
+.form .btn:active,
+.form .btn:focus,
+.form .form-control:hover,
+.form .form-control:active,
+.form .form-control:focus {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  outline: none;
+}
+
+.form .btn {
+  font-weight: bold;
+}
+
+.form .btn.btn-primary {
+  background: #283148;
+  border-color: #283148;
+}
+.form .btn.btn-primary:hover,
+.form .btn.btn-primary:active,
+.form .btn.btn-primary:focus {
+  background: #3a4769;
+  border-color: #3a4769;
+}

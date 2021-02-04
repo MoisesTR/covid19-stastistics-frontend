@@ -1,0 +1,45 @@
+<div class="d-flex">
+  <div class="form-wrap d-flex">
+    <div class="align-self-center">
+      <div class="form-wrap-inner align-self-center h-100">
+        <a href="index.html" class="logo">
+          <img src="../../../../assets/img/logo.svg" alt="Logo">
+        </a>
+
+        <h3 class="mb-4">Log in to Credential</h3>
+        <p class="mb-5">Log in and check the most recent statistics of covid 19, you can check how the state of the pandemic is in each country.</p>
+
+        <form [formGroup]="formLogin"  (ngSubmit)="login()" class="form mb-5">
+
+          <!-- Username -->
+          <div class="form-group">
+            <input type="text" class="form-control" formControlName="userName" placeholder="Username">
+            <app-show-errors [control]="formLogin.controls['userName']">
+            </app-show-errors>
+          </div>
+
+          <!-- /.Username -->
+
+          <!-- Password -->
+          <div class="form-group">
+            <input type="password" class="form-control" formControlName="password" placeholder="Password">
+          </div>
+          <!-- /.Password -->
+
+          <div class="form-group mb-4">
+            <span class="small" [routerLink]="'register'">
+              Don’t have an account? <a>Join</a>
+            </span>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="img-wrap-login">
+  </div>
+</div>
