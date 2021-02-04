@@ -61,9 +61,11 @@ export class AuthService extends RestService {
   }
   public setUser(user: User): void {
     this.user = user;
+    localStorage.setItem('userName', user.userName);
   }
 
   logout(): void {
+    localStorage.clear();
     this.get(this.relativeUrl + 'logout');
     this.router.navigate(['/']);
   }
