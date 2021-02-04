@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { findFlagUrlByCountryName } from 'country-flags-svg';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { StatisticService } from '../../core/services/statistic.service';
@@ -18,6 +18,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 export class DashboardComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
   private $findStatisticByCountryName = new Subject();
+  private $findStatisticByCountryId = new Subject();
 
   formCases: FormGroup;
   formDeaths: FormGroup;
@@ -74,6 +75,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.countryName = this.authService.getUser().country;
     this.flagUrl = findFlagUrlByCountryName(this.countryName);
     this.getStatisticByCountryName();
+    this.onGetStatisticByCountryId();
     this.getStatistics();
 
     this.initForms();
@@ -96,6 +98,45 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
 
     this.$findStatisticByCountryName.next();
+  }
+
+  onGetStatisticByCountryId(): void {
+    this.$findStatisticByCountryId
+      .pipe(
+        switchMap(() => {
+          return this.statisticService.getStatisticById(this.countryToUpdate.statisticId);
+        }),
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe((statistic) => {
+        this.updateInformationCards(statistic);
+      });
+  }
+
+  updateInformationCards(statisticUpdated: Statistic): void {
+    this.continents.forEach((continent) => {
+      if (continent.name === statisticUpdated.continent) {
+        const indexStatisticTable = continent.statistics.findIndex(
+          (statistic2) => statistic2.statisticId === statisticUpdated.statisticId
+        );
+
+        // Update information of selected country in table
+        continent.statistics[indexStatisticTable] = { ...statisticUpdated };
+
+        // If the country updated if the same of the user logged, update the data in the card
+        if (statisticUpdated.statisticId === this.localStatistic.statisticId) {
+          this.$findStatisticByCountryName.next();
+        }
+
+        // Update the 3 totals cards
+        const indexStatistic = this.statistics.findIndex(
+          (statisticTotals) => statisticTotals.statisticId === statisticUpdated.statisticId
+        );
+
+        this.statistics[indexStatistic] = { ...statisticUpdated };
+        this.calculateTotals();
+      }
+    });
   }
 
   getStatistics(): void {
@@ -144,6 +185,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((resp) => {
         this.toastService.success(resp.message);
+        this.$findStatisticByCountryId.next(this.countryToUpdate.statisticId);
       });
   }
 
@@ -156,6 +198,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((resp) => {
         this.toastService.success(resp.message);
+        this.$findStatisticByCountryId.next(this.countryToUpdate.statisticId);
       });
   }
 
@@ -168,6 +211,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((resp) => {
         this.toastService.success(resp.message);
+        this.$findStatisticByCountryId.next(this.countryToUpdate.statisticId);
       });
   }
 
@@ -197,6 +241,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   showModalUpdate(statistic: Statistic): void {
+    [this.formCases, this.formTests, this.formDeaths].forEach((form) => form.reset());
     this.countryToUpdate = statistic;
     this.modalUpdateStatistic.show();
   }

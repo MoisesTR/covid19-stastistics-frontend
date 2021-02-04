@@ -6,12 +6,14 @@ import { HttpInterceptorService } from '@core/http-interceptor/http-interceptor.
 import { CountryService } from '@core/services/country.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { StatisticService } from '@core/services/statistic.service';
+import { LoginGuard } from '@core/guards/login.guard';
 
 @NgModule({
   declarations: [],
   imports: [HttpClientModule],
   providers: [
     AuthGuard,
+    LoginGuard,
     AuthService,
     StatisticService,
     CountryService,
