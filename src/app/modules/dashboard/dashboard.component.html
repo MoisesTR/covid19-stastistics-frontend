@@ -88,5 +88,258 @@
       </mdb-card>
     </div>
 
+    <div class="col-12 my-5">
+      <mdb-card class="rounded z-depth-3">
+        <mdb-card-body class="text-center">
+
+          <h1 class="h1 h1-responsive mb-3 text-primary-color">Statistics</h1>
+
+          <!-- Nav Tabs -->
+          <mdb-tabset #staticTabs [vertical]="true" [buttonClass]="'md-pills text-center transparent'"
+                      [contentClass]="'z-depth-0 my-5'">
+            <!--Panel 1-->
+            <mdb-tab *ngFor="let continent of continents" [heading]="continent.name">
+              <div class="row">
+
+                <div class="col-12 mt-n5">
+                  <div class="scrollbar scrollbar-primary">
+                    <div class="force-overflow">
+                      <div class="table-responsive">
+                        <table mdbTable borderless="true" hover="true" small="true" striped="true">
+                          <thead>
+                          <tr>
+                            <th *ngFor="let head of headElements" scope="col">{{head}} </th>
+                          </tr>
+                          </thead>
+                          <tbody>
+
+                          <tr mdbTableCol *ngFor="let statistic of continent.statistics; let i = index">
+                            <th scope="row">{{i + 1}}</th>
+                            <td>{{statistic.country}}</td>
+                            <td>{{statistic.population | number}}</td>
+                            <td>
+
+                                <span class="table-remove">
+                                  <button type="button" mdbBtn size="sm" class="my-0 bg-primary-color white-text"
+                                          (click)="showDetailCountry(statistic)" mdbWavesEffect>
+                                    <mdb-icon far icon="eye"></mdb-icon>
+                                  </button>
+                                </span>
+
+                              <span class="table-remove">
+                                  <button type="button" mdbBtn  (click)="showModalUpdate(statistic)" size="sm" color="default" class="my-0" mdbWavesEffect>
+                                    <mdb-icon far icon="edit"></mdb-icon>
+                                  </button>
+                                </span>
+                            </td>
+                          </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </mdb-tab>
+          </mdb-tabset>
+
+        </mdb-card-body>
+      </mdb-card>
+    </div>
+
+  </div>
+</div>
+
+
+<div mdbModal #modalDetailStatistic="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="show modal info"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content rounded">
+      <div class="modal-body text-center">
+        <h4 class="modal-title w-100" id="myModalLabel">{{selectedCountry?.continent}}</h4>
+        <h1 class="h1 h1-responsive mb-3 text-primary-color">{{selectedCountry?.country}}</h1>
+
+        <img src="{{flagUrlSelected}}" height="100" width="auto" alt="Country">
+
+        <div class="row mt-5">
+
+          <!-- Cases -->
+          <div class="col-12 col-sm-12 col-md-4 col-lg-4">
+
+            <h1 class="h1 h1-responsive text-primary-color">Cases</h1>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">Active: <span class="text-muted">{{selectedCountry?.cases.active | number}}</span> </h4>
+            </div>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">Critical: <span class="text-muted">{{selectedCountry?.cases.critical | number}}</span> </h4>
+            </div>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">Recovered: <span class="text-muted">{{selectedCountry?.cases.recovered | number}}</span> </h4>
+            </div>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">New Cases: <span class="text-muted">{{selectedCountry?.cases.newCases | number}}</span> </h4>
+            </div>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">Total: <span class="text-muted">{{selectedCountry?.cases.total | number}}</span> </h4>
+            </div>
+
+          </div>
+          <!-- /.Cases -->
+
+          <!-- Tests -->
+          <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-4 mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0">
+
+            <h1 class="h1 h1-responsive text-primary-color">Tests</h1>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">Total: <span class="text-muted">{{selectedCountry?.tests.total | number}}</span> </h4>
+            </div>
+
+          </div>
+          <!-- /.Tests -->
+
+          <!-- Deaths -->
+          <div class="col-12 col-sm-12 col-md-4 col-lg-4 mt-4 mt-sm-4 mt-md-0 mt-lg-0 mt-xl-0">
+
+            <h1 class="h1 h1-responsive text-primary-color">Deaths</h1>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">New Cases: <span class="text-muted">{{selectedCountry?.deaths.newCases | number}}</span> </h4>
+            </div>
+
+            <div class="col-12">
+              <h4 class="h4 h4-responsive">Total: <span class="text-muted">{{selectedCountry?.deaths.total | number}}</span> </h4>
+            </div>
+
+          </div>
+          <!-- /.Deaths -->
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="danger" size="sm" class="waves-light" aria-label="Close"
+                (click)="modalDetailStatistic.hide()" mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #modalUpdateStatistic="mdbModal" class="modal fade right" tabindex="-1" role="dialog"
+     aria-labelledby="Update modal" aria-hidden="true">
+  <div class="modal-dialog modal-full-height modal-right" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100">Update information</h4>
+      </div>
+      <div class="modal-body text-center">
+
+        <h4 class="modal-title w-100">{{countryToUpdate?.continent}}</h4>
+        <h1 class="h1 h1-responsive mb-3 text-primary-color">{{countryToUpdate?.country}} </h1>
+
+
+        <mdb-accordion [multiple]="false">
+          <mdb-accordion-item [collapsed]="false">
+            <mdb-accordion-item-head>Cases</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+
+              <form [formGroup]="formCases" (ngSubmit)="updateCases()">
+
+                <!-- Active -->
+                <div class="md-form md-outline">
+                  <input type="number" id="activeCases" class="form-control" formControlName="active" mdbInput>
+                  <label for="activeCases">Active</label>
+                </div>
+                <!-- /.Active -->
+
+                <!-- Critical -->
+                <div class="md-form md-outline">
+                  <input type="number" id="criticalCases" class="form-control" formControlName="critical" mdbInput>
+                  <label for="criticalCases">Critical</label>
+                </div>
+                <!-- /.Critical -->
+
+                <!-- Recovered -->
+                <div class="md-form md-outline">
+                  <input type="number" id="recoveredCases" class="form-control" formControlName="recovered" mdbInput>
+                  <label for="recoveredCases">Recovered</label>
+                </div>
+                <!-- /.Recovered -->
+
+
+                <!-- New Cases -->
+                <div class="md-form md-outline">
+                  <input type="number" id="newCases" class="form-control" formControlName="newCases" mdbInput>
+                  <label for="newCases">New cases</label>
+                </div>
+                <!-- /.New Cases -->
+
+                <button type="submit" mdbBtn class="bg-primary-color white-text" block="true"
+                        mdbWavesEffect>Update</button>
+
+              </form>
+
+
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+
+          <mdb-accordion-item>
+            <mdb-accordion-item-head>Tests</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+
+              <!-- Tests form -->
+              <form [formGroup]="formTests" (ngSubmit)="updateTests()">
+
+                <!-- New Cases of Tests-->
+                <div class="md-form md-outline">
+                  <input type="number" id="newCasesTests" class="form-control" formControlName="newTests" mdbInput>
+                  <label for="newCasesTests">New tests</label>
+                </div>
+                <!-- /.New Cases of Tests -->
+
+                <button type="submit" mdbBtn class="bg-primary-color white-text" block="true"
+                        mdbWavesEffect>Update</button>
+
+              </form>
+
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+
+          <mdb-accordion-item>
+            <mdb-accordion-item-head>Deaths</mdb-accordion-item-head>
+            <mdb-accordion-item-body>
+
+              <!-- Death form -->
+              <form [formGroup]="formDeaths" (ngSubmit)="updateDeaths()">
+
+                <!-- New Cases of deaths-->
+                <div class="md-form md-outline">
+                  <input type="number" id="newCasesDeath" class="form-control" formControlName="newCases" mdbInput>
+                  <label for="newCasesDeath">New deaths</label>
+                </div>
+                <!-- /.New Cases of deaths -->
+
+                <button type="submit" mdbBtn class="bg-primary-color white-text" block="true"
+                        mdbWavesEffect>Update</button>
+
+              </form>
+
+            </mdb-accordion-item-body>
+          </mdb-accordion-item>
+        </mdb-accordion>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="danger" size="sm" class="waves-light" aria-label="Close"
+                (click)="modalUpdateStatistic.hide()" mdbWavesEffect>Close</button>
+      </div>
+    </div>
   </div>
 </div>

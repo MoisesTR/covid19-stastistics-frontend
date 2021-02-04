@@ -47,18 +47,18 @@ export class StatisticService extends RestService {
     return this.get(this.relativeUrl + `country-name/${countryName}`);
   }
 
-  addNewCases(addNewCaseDto: AddNewCaseDto): Observable<boolean> {
+  addNewCases(addNewCaseDto: AddNewCaseDto): Observable<any> {
     const { statisticId, ...data } = addNewCaseDto;
-    return this.post(this.relativeUrl + `${statisticId}/new-cases`, data);
+    return this.post(this.relativeUrl + `new-cases/${statisticId}`, data);
   }
 
-  addNewDeaths(addNewDeathDto: AddNewDeathDto): Observable<boolean> {
+  addNewDeaths(addNewDeathDto: AddNewDeathDto): Observable<any> {
     const { statisticId, ...data } = addNewDeathDto;
-    return this.post(this.relativeUrl + `${statisticId}/new-deaths`, data);
+    return this.post(this.relativeUrl + `new-deaths/${statisticId}`, data);
   }
 
-  addNewTests(addNewTestDto: AddNewTestDto): Observable<boolean> {
+  addNewTests(addNewTestDto: AddNewTestDto): Observable<any> {
     const { statisticId, ...data } = addNewTestDto;
-    return this.post(this.relativeUrl + `${statisticId}/new-tests`, data);
+    return this.post(this.relativeUrl + `new-tests/${statisticId}`, data);
   }
 }
