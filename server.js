@@ -5,7 +5,7 @@ const app = express();
 const nameApp = 'covid19-stastistics-frontend';
 
 app.use(express.static(__dirname + `/dist/${nameApp}`));
-app.get('/', function (req, res) {
+app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname + `/dist/${nameApp}/index.html`));
 });
 
