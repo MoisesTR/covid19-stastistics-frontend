@@ -110,3 +110,8 @@ body {
   background: $hover-color;
   border-color: $hover-color;
 }
+
+.form-group .error-message {
+  position: inherit;
+  top: 0;
+}
