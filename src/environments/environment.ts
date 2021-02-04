@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'https://api-covid19-statistics.herokuapp.com/',
+  baseUrl: 'http://localhost:3000/',
 };
 
 /*
